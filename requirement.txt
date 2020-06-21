@@ -1,0 +1,15 @@
+numpy
+opencv-python
+simplejson
+psutil
+fvcore
+av
+fastapi[all]
+cython
+
+# For pycocotools support in windows
+# pip3 install "git+https://github.com/philferriere/cocoapi.git#egg=pycocotools&subdirectory=PythonAPI"
+# pip3 install torch==1.5.0+cu101 torchvision==0.6.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+# python3 -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
+
+
