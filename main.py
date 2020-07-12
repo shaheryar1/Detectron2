@@ -3,7 +3,7 @@
 
 # import some common libraries
 import numpy as np
-
+from models import get_predictions_yolov4
 from faster_rcnn import *
 from fastapi import FastAPI,File, UploadFile
 import numpy as np
@@ -24,22 +24,33 @@ def encode(img):
     return  new_image_string
 
 @app.post("/detect")
-async def root(file: bytes = File(...)):
+async def root(method:str ="yolo", file: bytes = File(...)):
     try:
+
         image = Image.open(io.BytesIO(file)).convert("RGB")
         img = np.array(image)
         image.save('t.jpg')
-        boxes,classes,scores=get_prediction('t.jpg',0.5)
+        if method=='yolo':
+            boxes, classes, scores=get_predictions_yolov4('t.jpg')
+        else:
+            boxes,classes,scores=get_prediction('t.jpg',0.5)
+            # box = boxes[i]
+            # x1, y1, x2, y2 = int(box[0][0]), int(box[0][1]), int(box[1][0]), int(box[1][1])
 
         response={}
         response["objects_count"]=len(boxes)
         response["objects"]=[]
 
         for i in range(len(boxes)):
-            box=boxes[i]
-            x1,y1,x2,y2=int(box[0][0]),int(box[0][1]),int(box[1][0]),int(box[1][1])
+            if method=="yolo":
+                box=boxes[i]
+                print(box)
+                x1,y1,x2,y2=int(box[0]),int(box[1]),int(box[2]),int(box[3])
+            else:
+                box = boxes[i]
+                x1, y1, x2, y2 = int(box[0][0]), int(box[0][1]), int(box[1][0]), int(box[1][1])
             a={}
-            a["box"]=(int(box[0][0]),int(box[0][1]),int(box[1][0]),int(box[1][1]))
+            a["box"]=(x1,y1,x2,y2)
             a["scores"]=int(scores[i]*100)
             a["class"]=classes[i]
             response["objects"].append(a)
@@ -51,5 +62,3 @@ async def root(file: bytes = File(...)):
         return {"Error": "Unexpected error occured"}
 
 
-# cv2.imshow('a',out.get_image()[:, :, ::-1])
-# cv2.waitKey(10000)

@@ -6,6 +6,11 @@ fvcore
 av
 fastapi[all]
 cython
+tensorboardX==2.0
+scikit_image==0.16.2
+matplotlib==2.2.3
+tqdm==4.43.0
+easydict==1.9
 
 # For pycocotools support in windows
 # pip3 install "git+https://github.com/philferriere/cocoapi.git#egg=pycocotools&subdirectory=PythonAPI"
